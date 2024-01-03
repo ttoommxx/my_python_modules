@@ -65,8 +65,7 @@ char* logFibBig(int n)
             mpz_add(v3, temp1, temp2);
         }
     }
-    char* s;
-    convert v2 to s!!
+    char* s = mpz_get_str(NULL, 10, v2);
     mpz_clear(v1);
     mpz_clear(v2);
     mpz_clear(v3);
@@ -85,19 +84,19 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    int i = atoi(argv[1]);
+    int i = atoi(argv[1]), time_taken;
+    clock_t start, end;
     if(i>93){
         printf("WARNING: integer overflow, using big int from GMP library.\n");
 
-        clock_t start, end;
         start = clock();
         char* fib = logFibBig(i);
         end = clock();
 
         gmp_printf("logFibInt(%d) = %s\n", i, fib);
-        free the variable fib
-
-        int time_taken = end-start;
+        free(fib);
+       
+        time_taken = end-start;
         printf("Time taken %d\n", time_taken);
     } else{
         printf("logFib(%d) = %llu\n", i, logFib(i));
