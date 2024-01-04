@@ -3,34 +3,7 @@
 #include <gmp.h>
 #include <python3.12/Python.h>
 
-unsigned long long int logFib(int n)
-{
-    unsigned long long int v1 = 1, v2 = 1, v3 = 0, temp, temp1, temp2, temp3;
-    char i;
-    for(i=0; n>>i; i++){
-        ;
-    }
-    for(i-=2; i>=0; i--){
-        if (n >> i & 1){
-            temp1 = v1 * v1 + v2 * v2;
-            temp2 = (v1 + v3) * v2;
-            v1 = temp1+temp2;
-            v2 = temp1;
-            v3 = temp2;
-        } else{
-            temp = v2 * v2;
-            temp1 = v1 * v1 + temp;
-            temp2 = (v1 + v3) * v2;
-            temp3 = temp + v3 * v3;
-            v1 = temp1;
-            v2 = temp2;
-            v3 = temp3;
-        }
-    }
-    return v2;
-}
-
-char* logFibBig(int n)
+char* logFib(int n)
 {
     mpz_t v1, v2, v3, temp1, temp2;
     mpz_init_set_ui(v1, 1);
@@ -83,24 +56,38 @@ char* logFibBig(int n)
     return s;
 }
 
-static PyObject* fibonacci(PyObject* self, PyObject* args)
+static PyObject* fibonacci(PyObject* self, PyObject* args, PyObject* kwargs)
 {
     int n;
-    unsigned long long int sts;
+    int parseString = 0;
 
-    if(!PyArg_ParseTuple(args, "i", &n)){
+    static char* kwlist[] = {"n", "parseString", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|i", kwlist, &n, &parseString))
+    {
         return NULL;
     }
-    sts = logFib(n);
-    // return PyLong_FromUnsignedLongLong(sts);
 
+    if (n < 0)
+    {
+        // set value error
+        return NULL;
+    }
 
-    char *sts2;
-    sts2 = logFibBig(n);
-    PyObject* sol = PyLong_FromString(sts2, NULL, 10);
-    free(sts2);
+    char *sts = logFib(n);
+    PyObject *sol;
+    if (parseString != 0)
+    {
+        sol = PyUnicode_FromString(sts);
+    }
+    else
+    {
+        sol = PyLong_FromString(sts, NULL, 10);
+    }
+
+    free(sts);
     return sol;
-}
+    }
 
 static PyObject* version(PyObject* self)
 {
@@ -108,10 +95,9 @@ static PyObject* version(PyObject* self)
 }
 
 static PyMethodDef Tests[] = {
-    {"fibonacci", fibonacci, METH_VARARGS, "Calculate the n-th fibonacci number"},
+    {"fibonacci", (PyCFunction)fibonacci, METH_VARARGS | METH_KEYWORDS, "Calculate the n-th fibonacci number"},
     {"version", (PyCFunction)version, METH_NOARGS, "Return the version of the module"},
-    {NULL, NULL, 0, NULL}
-};
+    {NULL, NULL, 0, NULL}};
 
 static struct PyModuleDef Test = {
     PyModuleDef_HEAD_INIT,

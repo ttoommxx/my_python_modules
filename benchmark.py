@@ -1,6 +1,6 @@
 from time import time
 
-import Test
+from Test import fibonacci
 
 
 def fib(n):
@@ -15,9 +15,9 @@ def fib(n):
 
 
 time1, time2 = 0, 0
-for i in range(94):
+for i in range(1000000,1000100):
     start = time()
-    t1 = Test.fibonacci(i)
+    t1 = fibonacci(i, parseString=True)
     end = time()
     time1 += end-start
 
@@ -25,10 +25,6 @@ for i in range(94):
     t2 = fib(i)
     end = time()
     time2 += end-start
-    print(i, t1, t2)
-    if t1 != t2:
-        print("Error")
-        break
-
+    
 print("C function:", time1)
 print("Python function:", time2)
