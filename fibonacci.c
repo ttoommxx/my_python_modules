@@ -91,7 +91,7 @@ static PyObject* fibonacci(PyObject* self, PyObject* args, PyObject* kwargs)
 
     if (n < 0)
     {
-        PyErr_SetString(PyExc_ValueError, "Argument needs to be a non negative integer");
+        PyErr_SetString(PyExc_ValueError, "The argument must be >= 0");
         return NULL;
     }
 
@@ -102,12 +102,13 @@ static PyObject* fibonacci(PyObject* self, PyObject* args, PyObject* kwargs)
     {
         if(base < 2 || base > 62)
         {
-            PyErr_SetString(PyExc_ValueError, "The base needs to be between 2 and 36 included");
+            PyErr_SetString(PyExc_ValueError, "The base must be >= 2 and <= 62");
             return NULL;
         }
         sts = logFib(n, base);
         sol = PyUnicode_FromString(sts);
-    } else
+    }
+    else
     {
         sts = logFib(n, 36);
         sol = PyLong_FromString(sts, NULL, 36);
