@@ -47,7 +47,7 @@ char* logFib(int n, int base) // implementation of fibonacci using the standard 
         {
             // v1, v2, v3 = v1*v1+v2*v2, (v1+v3)*v2, v2*v2+v3*v3
 
-            mpz_init(temp1); // initialise temp variables
+            mpz_init(temp1); // initialise temp variable
             mpz_init(temp2);
 
             mpz_add(temp1, v1, v3);
@@ -61,7 +61,7 @@ char* logFib(int n, int base) // implementation of fibonacci using the standard 
             mpz_mul(temp1, v3, v3);
             mpz_add(v3, temp1, temp2);
 
-            mpz_clear(temp1); // clear temp variables
+            mpz_clear(temp1); // clear temp variable
             mpz_clear(temp2);
         }
     }
