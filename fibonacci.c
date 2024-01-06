@@ -5,12 +5,13 @@
 
 char* logFib(int n, int base) // implementation of fibonacci using the standard log(n) algorithm
 {
-    if(n==0)
+    if(n == 0 || n == 1)
     {
-        char*s = (char*) malloc(2*sizeof(char));
-        strcpy(s, "0");
+        char* s = (char*) malloc(2*sizeof(char));
+        sprintf(s, "%d", n);
         return s;
     }
+    
     mpz_t v1, v2, v3, temp1, temp2;
     mpz_init_set_ui(v1, 1);
     mpz_init_set_ui(v2, 1);
@@ -21,7 +22,7 @@ char* logFib(int n, int base) // implementation of fibonacci using the standard 
     {
         ; // calculate  number of digits in the binary representation
     }
-    for (i -= 2; i >= 0; i--)
+    for (i -= 2; i > 0; i--)
     {
         if (n >> i & 1) // double it and move by one
         {
@@ -64,10 +65,25 @@ char* logFib(int n, int base) // implementation of fibonacci using the standard 
             mpz_clear(temp2);
         }
     }
-    char *s = mpz_get_str(NULL, base, v2);
+
+    // last cycle is simpler and we can use v3 as temp
+    if (n & 1) // double it and move by one
+    {
+        mpz_mul(v3, v2, v2);
+        mpz_addmul(v3, v1, v1);
+        mpz_set(v2, v3);
+    }
+    else // only double it
+    {
+        mpz_add(v3, v1, v3);
+        mpz_mul(v2, v3, v2);
+    }
     mpz_clear(v1);
-    mpz_clear(v2);
     mpz_clear(v3);
+
+    char *s = mpz_get_str(NULL, base, v2);
+    mpz_clear(v2);
+    
     if (!s)
     {
         printf("Memory failed to be allocated\n");
