@@ -3,7 +3,7 @@
 #include <gmp.h>
 #include <python3.12/Python.h>
 
-char *logFib(unsigned long long n, unsigned char base) // implementation of fibonacci using the standard log(n) algorithm
+char *logFib(unsigned long long n, unsigned char base) // implementation of fibonacci in log(n) time and constant space
 {
     if(n == 0 || n == 1)
     {
@@ -17,7 +17,7 @@ char *logFib(unsigned long long n, unsigned char base) // implementation of fibo
     mpz_init_set_ui(v2, 1);
     mpz_init(v3);
     
-    char i;
+    unsigned char i;
     for (i = 0; n >> i; i++)
     {
         ; // calculate  number of digits in the binary representation
@@ -61,18 +61,17 @@ char *logFib(unsigned long long n, unsigned char base) // implementation of fibo
     // last cycle is simpler and we can use v3 as temp
     if (n & 1) // double it and move by one
     {
-        mpz_mul(v3, v2, v2);
-        mpz_addmul(v3, v1, v1);
-        mpz_set(v2, v3);
+        mpz_mul(v2, v2, v2);
+        mpz_addmul(v2, v1, v1);
     }
     else // only double it
     {
         mpz_add(v3, v1, v3);
         mpz_mul(v2, v3, v2);
     }
+
     mpz_clear(v1);
     mpz_clear(v3);
-
     char *s = mpz_get_str(NULL, base, v2);
     mpz_clear(v2);
     
@@ -120,7 +119,7 @@ static PyObject* fibonacci(PyObject* self, PyObject* args, PyObject* kwargs)
 
 static PyObject* version(PyObject* self)
 {
-    return Py_BuildValue("s", "Version 0.1");
+    return Py_BuildValue("s", "Version 0.2");
 }
 
 static PyMethodDef methods[] = {
