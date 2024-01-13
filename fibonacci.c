@@ -3,7 +3,7 @@
 #include <gmp.h>
 #include <python3.12/Python.h>
 
-char* logFib(int n, int base) // implementation of fibonacci using the standard log(n) algorithm
+char *logFib(int n, unsigned char base) // implementation of fibonacci using the standard log(n) algorithm
 {
     if(n == 0 || n == 1)
     {
@@ -96,11 +96,11 @@ static PyObject* fibonacci(PyObject* self, PyObject* args, PyObject* kwargs)
 {
     int n;
     int parseString = 0;
-    int base = 10;
+    unsigned char base = 10;
 
     static char* kwlist[] = {"n", "parseString", "base", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|ii", kwlist, &n, &parseString, &base))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|pb", kwlist, &n, &parseString, &base))
     {
         return NULL;
     }
