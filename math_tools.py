@@ -11,7 +11,7 @@ def fibonacci(n: int, parseString: str = False, base:int = 10):
     # check that the base is an integer between 2 and 36 included
     if type(base) != int:
         raise ValueError("The base must be an integer")
-    elif base < 2 or base > 36:
+    elif base < 2 or base > 62:
         raise ValueError("The base must be >= 2 and <= 62")
 
     return math_tools_c.fibonacci(n, parseString, base)

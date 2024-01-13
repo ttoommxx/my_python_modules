@@ -12,7 +12,7 @@ char *logFib(unsigned long long n, unsigned char base) // implementation of fibo
         return s;
     }
     
-    mpz_t v1, v2, v3, temp1, temp2;
+    mpz_t v1, v2, v3, temp2;
     mpz_init_set_ui(v1, 1);
     mpz_init_set_ui(v2, 1);
     mpz_init(v3);
@@ -28,18 +28,12 @@ char *logFib(unsigned long long n, unsigned char base) // implementation of fibo
         {
             // v1, v2, v3 = v1*v1+v2*v2, (v1+v3)*v2, v2*v2+v3*v3
             // v1, v2, v3 = v1+v2, v1, v2
-            // simplify with simple algebra
 
-            mpz_init(temp1); // initialise temp variables
+            mpz_add(v3, v1, v3);
+            mpz_mul(v3, v3, v2);
 
-            mpz_add(temp1, v1, v3);
-            mpz_mul(v3, temp1, v2);
-
-            mpz_mul(temp1, v2, v2);
-            mpz_addmul(temp1, v1, v1);
-            mpz_set(v2, temp1);
-
-            mpz_clear(temp1); // clear temp variables
+            mpz_mul(v2, v2, v2);
+            mpz_addmul(v2, v1, v1);
 
             mpz_add(v1, v2, v3);
         }
@@ -47,21 +41,19 @@ char *logFib(unsigned long long n, unsigned char base) // implementation of fibo
         {
             // v1, v2, v3 = v1*v1+v2*v2, (v1+v3)*v2, v2*v2+v3*v3
 
-            mpz_init(temp1); // initialise temp variable
-            mpz_init(temp2);
+            mpz_init_set(temp2, v2);
+            
+            mpz_add(v2, v1, v3);
+            mpz_mul(v2, v2, temp2);
 
-            mpz_add(temp1, v1, v3);
-            mpz_mul(temp2, v2, v2);
+            mpz_mul(temp2, temp2, temp2);
 
-            mpz_mul(v2, temp1, v2);
+            mpz_mul(v1, v1, v1);
+            mpz_add(v1, v1, temp2);
 
-            mpz_mul(temp1, v1, v1);
-            mpz_add(v1, temp1, temp2);
+            mpz_mul(v3, v3, v3);
+            mpz_add(v3, v3, temp2);
 
-            mpz_mul(temp1, v3, v3);
-            mpz_add(v3, temp1, temp2);
-
-            mpz_clear(temp1); // clear temp variable
             mpz_clear(temp2);
         }
     }
