@@ -1,8 +1,8 @@
 from distutils.core import setup, Extension
 
 module = Extension(
-    "Test",
-    sources = ["fibonacci.c"],
+    "math_tools_c",
+    sources = ["math_tools_c.c"],
     libraries = ["gmp"],
     )
 

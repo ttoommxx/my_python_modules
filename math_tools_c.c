@@ -3,7 +3,7 @@
 #include <gmp.h>
 #include <python3.12/Python.h>
 
-char *logFib(int n, unsigned char base) // implementation of fibonacci using the standard log(n) algorithm
+char *logFib(unsigned long long n, unsigned char base) // implementation of fibonacci using the standard log(n) algorithm
 {
     if(n == 0 || n == 1)
     {
@@ -84,49 +84,41 @@ char *logFib(int n, unsigned char base) // implementation of fibonacci using the
     char *s = mpz_get_str(NULL, base, v2);
     mpz_clear(v2);
     
-    if (!s)
-    {
-        printf("Memory failed to be allocated\n");
-        exit(1);
-    }
     return s;
 }
 
 static PyObject* fibonacci(PyObject* self, PyObject* args, PyObject* kwargs)
 {
-    int n;
+    unsigned long long n;
     int parseString = 0;
     unsigned char base = 10;
 
     static char* kwlist[] = {"n", "parseString", "base", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|pb", kwlist, &n, &parseString, &base))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Kpb", kwlist, &n, &parseString, &base))
     {
         return NULL;
     }
 
-    if (n < 0)
+    if (!parseString) // set high base to save on memory
     {
-        PyErr_SetString(PyExc_ValueError, "The argument must be >= 0");
-        return NULL;
+        base = 36;
     }
 
-
-    char *sts;
+    char *sts = logFib(n, base);
+    if (!sts)
+    {
+        PyErr_SetString(PyExc_MemoryError, "Memory failed to allocate");
+        return NULL;
+    }
+    
     PyObject *sol;
-    if(parseString)
+    if (parseString)
     {
-        if(base < 2 || base > 62)
-        {
-            PyErr_SetString(PyExc_ValueError, "The base must be >= 2 and <= 62");
-            return NULL;
-        }
-        sts = logFib(n, base);
         sol = PyUnicode_FromString(sts);
     }
     else
     {
-        sts = logFib(n, 36);
         sol = PyLong_FromString(sts, NULL, 36);
     } 
     free(sts);
@@ -139,21 +131,20 @@ static PyObject* version(PyObject* self)
     return Py_BuildValue("s", "Version 0.1");
 }
 
-static PyMethodDef Tests[] = {
+static PyMethodDef methods[] = {
     {"fibonacci", (PyCFunction)fibonacci, METH_VARARGS | METH_KEYWORDS, "Calculate the n-th fibonacci number"},
     {"version", (PyCFunction)version, METH_NOARGS, "Return the version of the module"},
     {NULL, NULL, 0, NULL}};
 
-static struct PyModuleDef Test = {
+static struct PyModuleDef math_tools_c = {
     PyModuleDef_HEAD_INIT,
-    "Test",
+    "math_tools_c",
     "Random modules",
-    -1,// global state
-    Tests
-};
+    -1, // global state
+    methods};
 
 //INITIALIZER FUNCTION
-PyMODINIT_FUNC PyInit_Test(void)
+PyMODINIT_FUNC PyInit_math_tools_c(void)
 {
-    return PyModule_Create(&Test);
+    return PyModule_Create(&math_tools_c);
 }

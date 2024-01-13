@@ -1,2 +1,2 @@
-from Test import fibonacci
-print("Call the function by typing \"fibonacci\"")
+import math_tools
+print("The module \"math_tools\" has been imported")
